@@ -1,0 +1,14 @@
+FROM node:24-bookworm-slim
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/client/package.json apps/client/package.json
+COPY packages/core/package.json packages/core/package.json
+RUN npm ci --omit=dev --workspace=@echo/api --include-workspace-root=false
+COPY apps/api apps/api
+COPY packages/core packages/core
+RUN mkdir -p /data && chown node:node /data
+USER node
+ENV HOST=0.0.0.0 PORT=4280 DATABASE_PATH=/data/echo.db
+EXPOSE 4280
+CMD ["node","--env-file-if-exists=.env","--import","tsx","apps/api/src/main.ts"]

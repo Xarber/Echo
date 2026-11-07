@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    environment:
+      HOST: 0.0.0.0
+      PORT: 4280
+      DATABASE_PATH: /data/echo.db
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-false}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      AI_PROVIDER: ${AI_PROVIDER:-ollama}
+      AI_ENDPOINT: ${AI_ENDPOINT:-}
+      AI_MODEL: ${AI_MODEL:-}
+      AI_EMBEDDING_MODEL: ${AI_EMBEDDING_MODEL:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+    volumes: ["echo-data:/data"]
+    ports: ["127.0.0.1:4280:4280"]
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+  web:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.web
+    ports: ["127.0.0.1:8080:8080"]
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+volumes:
+  echo-data:

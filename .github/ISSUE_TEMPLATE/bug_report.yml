@@ -1,0 +1,17 @@
+name: Bug report
+description: Report a reproducible problem without private diary content.
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Explain expected and actual behavior. Use synthetic examples; never include secrets or private entries.
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Steps to reproduce }
+    validations: { required: true }
+  - type: input
+    id: environment
+    attributes: { label: Version, platform and build commit }
+    validations: { required: true }

@@ -1,0 +1,120 @@
+name: Mobile distribution builds
+on:
+  workflow_dispatch:
+  push:
+    branches: [beta, main]
+permissions:
+  contents: read
+concurrency:
+  group: echo-build-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  ios:
+    name: iOS ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix: { target: [unsigned, simulator] }
+    runs-on: macos-latest
+    env:
+      EXPO_PUBLIC_BUILD_COMMIT: ${{ github.sha }}
+      CI: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "24", cache: npm }
+      - run: npm ci
+      - run: npx expo prebuild --platform ios --no-install
+        working-directory: apps/client
+      - run: pod install
+        working-directory: apps/client/ios
+      - name: Compile device or simulator
+        working-directory: apps/client
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          if [ "$TARGET" = simulator ]; then
+            xcodebuild -workspace ios/Echo.xcworkspace -scheme Echo -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO
+          else
+            xcodebuild -workspace ios/Echo.xcworkspace -scheme Echo -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build CODE_SIGNING_ALLOWED=NO
+          fi
+      - name: Package and inspect
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          mkdir -p artifacts
+          VERSION=$(node -p "require('./apps/client/app.json').expo.version")
+          CHANNEL=${GITHUB_REF_NAME}
+          if [ "$TARGET" = simulator ]; then
+            APP=apps/client/build/Build/Products/Release-iphonesimulator/Echo.app
+            file "$APP/Echo"
+            ditto -c -k --sequesterRsrc --keepParent "$APP" "artifacts/Echo-v$VERSION-$CHANNEL-${GITHUB_SHA:0:8}-ios-simulator.app.zip"
+          else
+            mkdir -p Payload
+            ditto apps/client/build/Build/Products/Release-iphoneos/Echo.app Payload/Echo.app
+            file Payload/Echo.app/Echo
+            ditto -c -k --keepParent Payload "artifacts/Echo-v$VERSION-$CHANNEL-${GITHUB_SHA:0:8}-ios-unsigned.ipa"
+          fi
+          shasum -a 256 artifacts/* > artifacts/SHA256SUMS
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          {
+            name: "echo-ios-${{ matrix.target }}-${{ github.ref_name }}-${{ github.sha }}",
+            path: artifacts/,
+          }
+  android:
+    name: Android ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix: { target: [apk, aab] }
+    runs-on: ubuntu-latest
+    env:
+      EXPO_PUBLIC_BUILD_COMMIT: ${{ github.sha }}
+      ECHO_KEYSTORE_PASSWORD: ${{ secrets.ECHO_KEYSTORE_PASSWORD }}
+      ECHO_KEY_ALIAS: ${{ secrets.ECHO_KEY_ALIAS }}
+      ECHO_KEY_PASSWORD: ${{ secrets.ECHO_KEY_PASSWORD }}
+      KEYSTORE_B64: ${{ secrets.ECHO_KEYSTORE_BASE64 }}
+      CI: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: "24", cache: npm }
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with: { distribution: temurin, java-version: "17" }
+      - uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd # v4.0.4
+      - run: npm ci
+      - run: npx expo prebuild --platform android --no-install
+        working-directory: apps/client
+      - name: Configure existing release identity
+        run: |
+          test -n "$KEYSTORE_B64" || { echo 'Configure authorized release keystore secrets first.'; exit 1; }
+          printf '%s' "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/echo-release.keystore"
+          echo "ECHO_KEYSTORE_PATH=$RUNNER_TEMP/echo-release.keystore" >> "$GITHUB_ENV"
+      - run: node scripts/android-signing.mjs
+      - name: Build release
+        working-directory: apps/client/android
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          if [ "$TARGET" = apk ]; then
+            ./gradlew assembleRelease -PreactNativeArchitectures=armeabi-v7a,arm64-v8a,x86,x86_64
+          else
+            ./gradlew bundleRelease -PreactNativeArchitectures=armeabi-v7a,arm64-v8a,x86,x86_64
+          fi
+      - name: Collect and checksum
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          mkdir -p artifacts
+          VERSION=$(node -p "require('./apps/client/app.json').expo.version")
+          if [ "$TARGET" = apk ]; then
+            cp apps/client/android/app/build/outputs/apk/release/app-release.apk "artifacts/Echo-v$VERSION-${GITHUB_REF_NAME}-${GITHUB_SHA:0:8}-android-universal.apk"
+          else
+            cp apps/client/android/app/build/outputs/bundle/release/app-release.aab "artifacts/Echo-v$VERSION-${GITHUB_REF_NAME}-${GITHUB_SHA:0:8}-android.aab"
+          fi
+          sha256sum artifacts/* > artifacts/SHA256SUMS
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          {
+            name: "echo-android-${{ matrix.target }}-${{ github.ref_name }}-${{ github.sha }}",
+            path: artifacts/,
+          }
