@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+ <title>Echo — a thought and its ripples</title>
+ <defs><linearGradient id="surface" x2="1" y2="1"><stop stop-color="#7e84ff"/><stop offset="1" stop-color="#5056de"/></linearGradient></defs>
+
+ <g transform="translate(150 150) scale(.7)"><g id="primary-symbol" fill="none" stroke="#6269f5" stroke-width="64" stroke-linecap="round"><path d="M610 332a230 230 0 1 0 0 360"/><path d="M578 425a115 115 0 1 0 0 174"/></g>
+ <g id="echo-ripple" fill="none" stroke="#6269f5" stroke-width="48" stroke-linecap="round" opacity=".6"><path d="M736 362a265 265 0 0 1 0 300"/></g>
+ <g id="thought-spark"><circle cx="520" cy="512" r="38" fill="#6269f5"/></g>
+</g></svg>
