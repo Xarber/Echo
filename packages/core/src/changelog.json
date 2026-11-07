@@ -1,0 +1,22 @@
+[
+  {
+    "version": "0.1.0",
+    "date": "2026-11-06",
+    "highlights": [
+      {
+        "icon": "\u2726",
+        "title": "A place for every thought",
+        "description": "Capture offline, organize projects and connect ideas."
+      },
+      {
+        "icon": "\u25c8",
+        "title": "Your thinking, connected",
+        "description": "Manual relationships, evolution and keyword rediscovery."
+      }
+    ],
+    "fixes": [
+      "Versioned backups with import previews.",
+      "Optional, scoped AI through a self-hosted server."
+    ]
+  }
+]

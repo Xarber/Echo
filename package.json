@@ -1,43 +1,39 @@
 {
-  "name": "echo",
-  "main": "expo-router/entry",
-  "version": "1.0.0",
-  "dependencies": {
-    "@expo/ui": "~57.0.2",
-    "expo": "^57.0.0",
-    "expo-constants": "~57.0.2",
-    "expo-device": "~57.0.0",
-    "expo-font": "~57.0.0",
-    "expo-glass-effect": "~57.0.0",
-    "expo-image": "~57.0.0",
-    "expo-linking": "~57.0.1",
-    "expo-router": "~57.0.2",
-    "expo-splash-screen": "~57.0.1",
-    "expo-status-bar": "~57.0.0",
-    "expo-symbols": "~57.0.0",
-    "expo-system-ui": "~57.0.0",
-    "expo-web-browser": "~57.0.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "react-native": "0.86.0",
-    "react-native-gesture-handler": "~2.32.0",
-    "react-native-reanimated": "4.5.0",
-    "react-native-safe-area-context": "~5.7.0",
-    "react-native-screens": "4.25.2",
-    "react-native-web": "~0.21.0",
-    "react-native-worklets": "0.10.0"
+  "name": "echo-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run start -w @echo/client",
+    "web": "npm run web -w @echo/client",
+    "ios": "npm run ios -w @echo/client",
+    "android": "npm run android -w @echo/client",
+    "api": "npm run dev -w @echo/api",
+    "test": "tsx --test packages/core/test/*.test.ts apps/api/test/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "build:web": "npm run build -w @echo/client",
+    "db:migrate": "npm run migrate -w @echo/api",
+    "preview": "node scripts/serve-web.mjs",
+    "test:e2e": "playwright test",
+    "assets:generate": "node scripts/branding.mjs"
   },
   "devDependencies": {
-    "@types/react": "~19.2.2",
-    "typescript": "~6.0.3"
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "fake-indexeddb": "^6.2.7",
+    "prettier": "^3.9.10",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "sharp": "^0.35.5",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
   },
-  "scripts": {
-    "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "lint": "expo lint"
-  },
-  "private": true
+  "overrides": {
+    "react": "19.3.0"
+  }
 }
