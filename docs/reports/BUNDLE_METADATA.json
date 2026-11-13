@@ -1,0 +1,49 @@
+{
+  "version": "0.1.0",
+  "checkedOn": "2026-11-06",
+  "sourceCommit": null,
+  "sourceStatus": "Uncommitted: configured hardware signing key unavailable",
+  "nativeArtifacts": "JavaScript/Hermes bundles only; no IPA, simulator app, APK or AAB",
+  "files": [
+    {
+      "path": "apps/client/dist/manifest.webmanifest",
+      "size": 1170,
+      "sha256": "c11a80d59b2de5ef566cc14ccd232eb0b5616934cf7f35f994ce9afb187ec17f"
+    },
+    {
+      "path": "apps/client/dist/metadata.json",
+      "size": 49,
+      "sha256": "aa5f19cc84d41c0f8c70ececb2bc82e863227ea1e121632aca879eb616056991"
+    },
+    {
+      "path": "apps/client/dist/release.json",
+      "size": 429,
+      "sha256": "83cd2f6dee5b7316cd2976add5b6497d6780ac6fb8a8248d7c3e29bc3465dc54"
+    },
+    {
+      "path": "apps/client/dist/sw.js",
+      "size": 4062,
+      "sha256": "fb9c00def355635e809ed8289365295aaa7bcda26f6fe17468ca6e3c6ba4515c"
+    },
+    {
+      "path": "artifacts/native-bundles/_expo/static/js/android/entry-da35f10c1bc1df74b739e57237f61939.hbc",
+      "size": 3762710,
+      "sha256": "32f1005d43f029a62d48bb596f621b104e451887e8cb5459dd3c6b2ff0dba539"
+    },
+    {
+      "path": "artifacts/native-bundles/_expo/static/js/ios/entry-ef13ceed4fb87ab9ed619968353ae563.hbc",
+      "size": 3778457,
+      "sha256": "93232ad4dbb120ae3cf7ac12691310c790b85ce9492409d2b56f902f05691bc7"
+    },
+    {
+      "path": "artifacts/native-bundles/manifest.webmanifest",
+      "size": 1170,
+      "sha256": "c11a80d59b2de5ef566cc14ccd232eb0b5616934cf7f35f994ce9afb187ec17f"
+    },
+    {
+      "path": "artifacts/native-bundles/metadata.json",
+      "size": 3455,
+      "sha256": "5db5c60ff51fc382bcac26df3cfccb975db34373cd4506de55b5723abe30c2a7"
+    }
+  ]
+}
