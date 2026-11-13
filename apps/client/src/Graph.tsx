@@ -1,6 +1,7 @@
+import { MotionPressable as Pressable } from "./motion";
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, { useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import Svg, { Circle, Line, Text as SVGText, G } from "react-native-svg";
 import { titleOf, type Entry, type Relationship } from "@echo/core";
 export function Graph({
@@ -17,17 +18,15 @@ export function Graph({
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [radial, setRadial] = useState(true);
-  const nodes = entries
-    .slice(0, 60)
-    .map((e, i) => ({
-      entry: e,
-      x: radial
-        ? 300 + Math.cos((i / Math.max(entries.length, 1)) * Math.PI * 2) * 210
-        : 70 + (i % 5) * 110,
-      y: radial
-        ? 230 + Math.sin((i / Math.max(entries.length, 1)) * Math.PI * 2) * 175
-        : 60 + Math.floor(i / 5) * 65,
-    }));
+  const nodes = entries.slice(0, 60).map((e, i) => ({
+    entry: e,
+    x: radial
+      ? 300 + Math.cos((i / Math.max(entries.length, 1)) * Math.PI * 2) * 210
+      : 70 + (i % 5) * 110,
+    y: radial
+      ? 230 + Math.sin((i / Math.max(entries.length, 1)) * Math.PI * 2) * 175
+      : 60 + Math.floor(i / 5) * 65,
+  }));
   const map = new Map(nodes.map((n) => [n.entry.id, n]));
   return (
     <View style={{ gap: 12 }}>

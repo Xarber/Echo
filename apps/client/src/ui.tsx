@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useId, useState } from "react";
 import {
   View,
   Text,
@@ -9,12 +9,13 @@ import {
   type ViewStyle,
   type TextInputProps,
 } from "react-native";
+import { MotionPressable, AnimatedNotice } from "./motion";
 import Feather from "@expo/vector-icons/Feather";
 export const light = {
   bg: "#f7f8fc",
   surface: "#ffffff",
   text: "#25273e",
-  muted: "#7c8098",
+  muted: "#626780",
   border: "#e9eaf2",
   accent: "#6269f5",
   soft: "#eff0ff",
@@ -73,7 +74,7 @@ export function Label({
         {
           color: muted ? t.muted : t.text,
           fontSize: size,
-          lineHeight: size * 1.5,
+          lineHeight: size * (size >= 26 ? 1.18 : size >= 18 ? 1.32 : 1.5),
           fontWeight: bold ? "600" : "400",
         },
         style,
@@ -123,9 +124,15 @@ export function Button({
   testID?: string;
 }) {
   const t = useTheme();
-  const color = primary ? "#fff" : danger ? t.danger : t.text;
+  const color = disabled
+    ? t.muted
+    : primary
+      ? "#fff"
+      : danger
+        ? t.danger
+        : t.text;
   return (
-    <Pressable
+    <MotionPressable
       testID={testID}
       accessibilityLabel={typeof children === "string" ? children : undefined}
       accessibilityRole="button"
@@ -136,18 +143,20 @@ export function Button({
         styles.button,
         {
           borderColor: subtle ? "transparent" : primary ? t.accent : t.border,
-          backgroundColor: primary
-            ? "#6269f5"
-            : subtle
-              ? "transparent"
-              : t.surface,
-          opacity: disabled ? 0.45 : pressed ? 0.75 : 1,
+          backgroundColor: disabled
+            ? t.soft
+            : primary
+              ? "#6269f5"
+              : subtle
+                ? "transparent"
+                : t.surface,
+          opacity: 1,
         },
       ]}
     >
       {icon && <Icon name={icon} size={16} color={color} />}
       <Text style={{ color, fontSize: 13, fontWeight: "600" }}>{children}</Text>
-    </Pressable>
+    </MotionPressable>
   );
 }
 export function Field(props: TextInputProps & { label?: string }) {
@@ -177,7 +186,11 @@ export function Field(props: TextInputProps & { label?: string }) {
         placeholderTextColor={t.muted}
         style={[
           styles.input,
-          { color: t.text, borderColor: t.border, backgroundColor: t.surface },
+          {
+            color: t.text,
+            borderColor: t.bg === "#f7f8fc" ? "#8d92ab" : "#6f7592",
+            backgroundColor: t.surface,
+          },
           props.multiline && { textAlignVertical: "top", minHeight: 100 },
           props.style,
         ]}
@@ -189,33 +202,41 @@ export function Chip({
   children,
   onPress,
   active = false,
+  icon,
 }: {
+  icon?: React.ComponentProps<typeof Icon>["name"];
   children: React.ReactNode;
   onPress?: () => void;
   active?: boolean;
 }) {
   const t = useTheme();
   return (
-    <Pressable
+    <MotionPressable
       accessibilityRole={onPress ? "button" : undefined}
       accessibilityState={onPress ? { selected: active } : undefined}
       aria-selected={onPress ? active : undefined}
       onPress={onPress}
       style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
         borderRadius: 8,
         paddingHorizontal: 11,
         paddingVertical: onPress ? 12 : 5,
         backgroundColor: active ? t.soft : t.bg,
         borderWidth: 1,
         borderColor: active ? t.accent + "55" : t.border,
-        minHeight: onPress ? 44 : undefined,
+        minHeight: onPress ? 48 : undefined,
         justifyContent: "center",
       }}
     >
+      {icon && (
+        <Icon name={icon} size={15} color={active ? t.accent : t.muted} />
+      )}
       <Label size={12} style={{ color: active ? t.accent : t.muted }}>
         {children}
       </Label>
-    </Pressable>
+    </MotionPressable>
   );
 }
 export function Row({
@@ -245,17 +266,28 @@ export function Section({
   title,
   action,
   children,
+  icon,
 }: {
+  icon?: React.ComponentProps<typeof Icon>["name"];
   title: string;
   action?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const sectionTheme = useTheme();
   return (
     <View style={{ gap: 16 }}>
       <Row style={{ justifyContent: "space-between" }}>
-        <Label bold size={18}>
-          {title}
-        </Label>
+        <Row>
+          {(icon || sectionIcon(title)) && (
+            <Icon
+              name={(icon || sectionIcon(title))!}
+              color={sectionTheme.accent}
+            />
+          )}
+          <Label bold size={18}>
+            {title}
+          </Label>
+        </Row>
         {action}
       </Row>
       {children}
@@ -289,7 +321,7 @@ export function Empty({
 export const styles = StyleSheet.create({
   card: { borderRadius: 18, borderWidth: 1, padding: 22, gap: 14 },
   button: {
-    minHeight: 44,
+    minHeight: 48,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 10,
@@ -305,7 +337,69 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontSize: 15,
+    fontSize: 16,
   },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 16 },
 });
+
+function sectionIcon(
+  title: string,
+): React.ComponentProps<typeof Icon>["name"] | undefined {
+  const value = title.toLowerCase();
+  if (/privacy|security/.test(value)) return "shield";
+  if (/sync|update/.test(value)) return "refresh-cw";
+  if (/appearance/.test(value)) return "sun";
+  if (/trash/.test(value)) return "trash-2";
+  if (/data/.test(value)) return "database";
+  if (/task/.test(value)) return "check-square";
+  if (/project/.test(value)) return "box";
+  if (/collect|organiz/.test(value)) return "layers";
+  if (/connect/.test(value)) return "link";
+  if (/history|version/.test(value)) return "clock";
+  if (/developer/.test(value)) return "code";
+  if (/thought|journal/.test(value)) return "feather";
+  if (/about/.test(value)) return "info";
+  return undefined;
+}
+export function Disclosure({
+  title,
+  children,
+  icon = "info",
+}: {
+  title: string;
+  children: React.ReactNode;
+  icon?: React.ComponentProps<typeof Icon>["name"];
+}) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const theme = useTheme();
+  return (
+    <View style={{ gap: 12 }}>
+      <MotionPressable
+        accessibilityRole="button"
+        accessibilityLabel={title}
+        accessibilityState={{ expanded: open }}
+        aria-expanded={open}
+        aria-controls={id}
+        onPress={() => setOpen((v) => !v)}
+        style={{
+          minHeight: 48,
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
+        <Icon name={icon} color={theme.accent} />
+        <Label bold style={{ flex: 1 }}>
+          {title}
+        </Label>
+        <Icon name={open ? "chevron-up" : "chevron-down"} size={16} />
+      </MotionPressable>
+      {open && (
+        <AnimatedNotice nativeID={id} style={{ gap: 12 }}>
+          {children}
+        </AnimatedNotice>
+      )}
+    </View>
+  );
+}

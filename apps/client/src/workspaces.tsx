@@ -1,6 +1,7 @@
+import { MotionPressable as Pressable } from "./motion";
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, { useState } from "react";
-import { View, Pressable } from "react-native";
+import { View } from "react-native";
 import {
   stamp,
   now,

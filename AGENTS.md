@@ -19,5 +19,5 @@ Storage records, queues, sessions and imported files are untrusted. Do not log c
 - Reuse `Xarber/Echo`; never create a duplicate repository. Preserve master/history and the original MIT-licensed Expo starter. New Echo source remains AGPL-3.0-only; see LICENSE for the scoped notices.
 - Hardware-backed signing is preferred. If the configured hardware key is unavailable, create unsigned Conventional Commits without changing signing settings or substituting a software key. Report unsigned commits. Never rewrite/force-push history to re-sign without explicit authorization.
 - X-Center is the default hosting target. Keep private staging loopback-only and isolated; preserve existing services/data. Public source, DNS/routing and releases require scoped authorization.
-- Maintain the distinct `/welcome` product/installation/docs presence and the existing diary routes/PWA identity.
+- Show the landing on first Web visit at `/`. Remember explicit entry and let the Web logo reopen the landing at `/`. Preserve `/welcome` information pages, diary deep links, the PWA identity, and direct native startup.
 - Read relevant available design/motion skills before UI changes. Use shared motion tokens, reduced-motion/transparency fallbacks, meaningful icons and contrast checks. Native motion/material quality requires actual native verification.

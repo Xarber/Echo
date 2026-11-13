@@ -1,10 +1,11 @@
+import { MaterialSurface } from "./MaterialSurface";
+import { MotionPressable as Pressable, AnimatedNotice } from "./motion";
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
   ScrollView,
-  Pressable,
   useWindowDimensions,
   useColorScheme,
   Platform,
@@ -338,7 +339,17 @@ export default function App() {
                   gap: 28,
                 }}
               >
-                <Brand />
+                {Platform.OS === "web" ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="About Echo"
+                    onPress={() => navigate("/?view=landing")}
+                  >
+                    <Brand />
+                  </Pressable>
+                ) : (
+                  <Brand />
+                )}
                 <Button
                   primary
                   icon="plus"
@@ -425,7 +436,7 @@ export default function App() {
               </View>
             )}
             <View style={{ flex: 1, minWidth: 0 }}>
-              <View
+              <MaterialSurface
                 style={{
                   paddingHorizontal: wide ? 42 : 20,
                   minHeight: 78,
@@ -450,6 +461,14 @@ export default function App() {
                       {pageTitle}
                     </Label>
                   </Row>
+                ) : Platform.OS === "web" ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="About Echo"
+                    onPress={() => navigate("/?view=landing")}
+                  >
+                    <Brand small />
+                  </Pressable>
                 ) : (
                   <Brand small />
                 )}
@@ -497,7 +516,7 @@ export default function App() {
                     <Icon name="user" size={16} color={t.accent} />
                   </View>
                 </Row>
-              </View>
+              </MaterialSurface>
               <ScrollView
                 style={{ flex: 1 }}
                 contentContainerStyle={{

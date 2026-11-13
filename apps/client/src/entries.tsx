@@ -1,7 +1,8 @@
+import { MotionPressable as Pressable } from "./motion";
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, { useState, useEffect, useRef } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { View, Pressable, Text, Image, Linking } from "react-native";
+import { View, Text, Image, Linking } from "react-native";
 import {
   newEntry,
   editEntry,
@@ -45,7 +46,7 @@ export function EntryCard({
       accessibilityLabel={`Open ${titleOf(entry)}`}
       onPress={onOpen}
       style={({ pressed }) => ({
-        opacity: pressed ? 0.7 : 1,
+        opacity: 1,
         flex: 1,
         minWidth: 240,
         maxWidth: 540,

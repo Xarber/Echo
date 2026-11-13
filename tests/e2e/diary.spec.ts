@@ -7,6 +7,8 @@ test("offline capture, restart, revision, relationships, project and backup", as
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
+  await expect(page.getByText("Every thought deserves an echo.")).toBeVisible();
+  await page.getByRole("button", { name: "Open Echo", exact: true }).click();
   await expect(page.getByText("A quiet place for bright ideas.")).toBeVisible();
   await page
     .getByRole("button", { name: "Get started locally", exact: true })
@@ -460,10 +462,10 @@ test("a staged PWA update shows its own notes before activation and preserves a 
         /Synthetic update fixture · This is an isolated automated test/,
       ),
     ).toBeVisible();
-    await page
-      .getByRole("button", { name: "Update & reload", exact: true })
-      .click();
-    await page.waitForLoadState("domcontentloaded");
+    await Promise.all([
+      page.waitForEvent("load"),
+      page.getByRole("button", { name: "Update & reload", exact: true }).click(),
+    ]);
     await page.goto(`${origin}/capture`);
     await expect(page.getByTestId("thought-content")).toHaveValue(
       "Preserve me through the synthetic web update.",
