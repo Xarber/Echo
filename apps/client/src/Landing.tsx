@@ -452,7 +452,7 @@ const pages = {
       ],
       [
         "Availability",
-        "This is a development preview. No public source publication, native package release or official-store submission is claimed by this page. The configured repository and its existing history are preserved; distribution follows the project owner’s authorization.",
+        "Echo’s source is available at github.com/Xarber/Echo. Native installation packages are available only when published through the project’s release channels.",
       ],
     ],
   },

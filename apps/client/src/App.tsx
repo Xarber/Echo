@@ -1,3 +1,4 @@
+import { developerOptionsEnabled } from "./deployment";
 import { MaterialSurface } from "./MaterialSurface";
 import { MotionPressable as Pressable, AnimatedNotice } from "./motion";
 // SPDX-License-Identifier: AGPL-3.0-only
@@ -67,7 +68,9 @@ export default function App() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [globalQuery, setGlobalQuery] = useState("");
-  const [developer, setDeveloper] = useState(Date.now() < devExpires);
+  const [developer, setDeveloper] = useState(
+    developerOptionsEnabled && Date.now() < devExpires,
+  );
   const [whatsNew, setWhatsNew] = useState(false);
   const [webUpdate, setWebUpdate] = useState(false);
   const [updateNotes, setUpdateNotes] = useState<
@@ -288,8 +291,16 @@ export default function App() {
         <Settings
           navigate={navigate}
           notify={notify}
-          onVersion={tripleTap}
+          onVersion={developerOptionsEnabled ? tripleTap : undefined}
           developer={developer}
+        />
+      );
+    if (path === "/developer" && !developerOptionsEnabled)
+      return (
+        <Empty
+          icon="lock"
+          title="Page unavailable"
+          detail="This page is unavailable in this build."
         />
       );
     if (path === "/developer")

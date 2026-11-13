@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+import { developerOptionsEnabled, configuredApiUrl } from "./deployment";
 import React, { useState } from "react";
 import { View, Pressable, Text, Platform } from "react-native";
 import {
@@ -42,7 +43,7 @@ export function Settings({
 }: {
   navigate: Navigate;
   notify: (s: string) => void;
-  onVersion: () => void;
+  onVersion?: () => void;
   developer: boolean;
 }) {
   const { records, meta, syncing, error } = useStore();
@@ -160,27 +161,37 @@ export function Settings({
               you trust its administrator.
             </Label>
           )}
-          <Label size={12} muted>
-            Configure AI_PROVIDER, AI_ENDPOINT, AI_MODEL and AI_API_KEY on your
-            own backend. No paid key is needed for diary features.
-          </Label>
+          {!configuredApiUrl && (
+            <Label size={12} muted>
+              Configure AI_PROVIDER, AI_ENDPOINT, AI_MODEL and AI_API_KEY on
+              your own backend. No paid key is needed for diary features.
+            </Label>
+          )}
         </Card>
       </Section>
-      <Section title="Self-hosted synchronization">
+      <Section
+        title={
+          configuredApiUrl ? "Synchronization" : "Self-hosted synchronization"
+        }
+      >
         <Card>
-          <Field
-            label="Server URL (HTTPS except localhost)"
-            value={url}
-            onChangeText={setUrl}
-            autoCapitalize="none"
-          />
-          <Button
-            onPress={() =>
-              run(() => preferences({ apiUrl: url }), "Server saved")
-            }
-          >
-            Save server URL
-          </Button>
+          {!configuredApiUrl && (
+            <>
+              <Field
+                label="Server URL (HTTPS except localhost)"
+                value={url}
+                onChangeText={setUrl}
+                autoCapitalize="none"
+              />
+              <Button
+                onPress={() =>
+                  run(() => preferences({ apiUrl: url }), "Server saved")
+                }
+              >
+                Save server URL
+              </Button>
+            </>
+          )}
           <Field
             label="Email"
             value={email}
@@ -472,18 +483,24 @@ export function Settings({
           <Button icon="list" onPress={() => navigate("/changelog")}>
             What's new & changelog
           </Button>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`Version ${VERSION}. Tap three times for developer options.`}
-            onPress={onVersion}
-            style={{ minHeight: 44, justifyContent: "center" }}
-          >
+          {developerOptionsEnabled ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`Version ${VERSION}. Tap three times for developer options.`}
+              onPress={onVersion}
+              style={{ minHeight: 44, justifyContent: "center" }}
+            >
+              <Label muted size={12}>
+                Version {VERSION} · Commit{" "}
+                {process.env.EXPO_PUBLIC_BUILD_COMMIT || "development"}
+              </Label>
+            </Pressable>
+          ) : (
             <Label muted size={12}>
-              Version {VERSION} · Commit{" "}
-              {process.env.EXPO_PUBLIC_BUILD_COMMIT || "development"}
+              Version {VERSION}
             </Label>
-          </Pressable>
-          {developer && (
+          )}
+          {developerOptionsEnabled && developer && (
             <Button icon="code" onPress={() => navigate("/developer")}>
               Developer Options
             </Button>

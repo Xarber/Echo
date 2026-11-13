@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
+import { configuredApiUrl } from "./deployment";
 import { useSyncExternalStore } from "react";
 import {
   recordSchema,
@@ -41,7 +42,7 @@ type Meta = {
 const defaults: Preferences = {
   theme: "system",
   aiMode: "disabled",
-  apiUrl: "http://localhost:4280",
+  apiUrl: configuredApiUrl || "http://localhost:4280",
   welcome: false,
   lastVersion: "",
   autoCheck: true,
@@ -108,6 +109,7 @@ export async function initialize() {
       preferences: {
         ...defaults,
         ...((loaded.meta.preferences as object) || {}),
+        ...(configuredApiUrl ? { apiUrl: configuredApiUrl } : {}),
       },
     };
     persistenceReady = !loaded.readOnlyReason;
@@ -192,7 +194,6 @@ export async function importBackup(input: unknown, replaceConflicts = false) {
   return plan;
 }
 export async function api(path: string, body?: unknown, method?: string) {
-  const token = await getSession();
   const base = state.meta.preferences.apiUrl.replace(/\/$/, "");
   if (
     !/^https:\/\//.test(base) &&
@@ -201,6 +202,11 @@ export async function api(path: string, body?: unknown, method?: string) {
     throw new Error(
       "Use HTTPS for remote servers; HTTP is allowed only on localhost.",
     );
+  if (state.meta.syncOrigin && state.meta.syncOrigin !== base)
+    throw new Error(
+      "This diary is bound to a different server. Export a backup and reset sync binding before connecting.",
+    );
+  const token = await getSession();
   const response = await fetch(`${base}${path}`, {
     method: method || (body ? "POST" : "GET"),
     headers: {
