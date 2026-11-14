@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "uadsVersion",
+    "manifestVersion",
+    "project",
+    "distribution",
+    "qualityWorkflow",
+    "requirements",
+    "exceptions"
+  ],
+  "properties": {
+    "uadsVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "manifestVersion": {
+      "const": 1
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "name",
+        "repository",
+        "profiles",
+        "framework",
+        "platforms",
+        "hosting"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "mobile-app",
+              "desktop-app",
+              "web-app",
+              "web-service",
+              "backend-service",
+              "cli-tool",
+              "library",
+              "hybrid"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "framework": {
+          "type": "string",
+          "minLength": 1
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "ios",
+              "android",
+              "web"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "hosting": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "distribution": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "qualityWorkflow": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "applicability",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "pattern": "^UADS-[A-Z]+-[0-9]{3}$",
+            "type": "string"
+          },
+          "applicability": {
+            "enum": [
+              "required",
+              "conditional",
+              "optional",
+              "not-applicable",
+              "approved-exception"
+            ]
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "passed",
+              "failed",
+              "blocked",
+              "not-applicable",
+              "waived"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "exceptions": {
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "additionalProperties": false
+}

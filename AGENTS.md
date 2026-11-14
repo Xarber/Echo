@@ -21,3 +21,7 @@ Storage records, queues, sessions and imported files are untrusted. Do not log c
 - X-Center is the default hosting target. Keep private staging loopback-only and isolated; preserve existing services/data. Public source, DNS/routing and releases require scoped authorization.
 - Show the landing on first Web visit at `/`. Remember explicit entry and let the Web logo reopen the landing at `/`. Preserve `/welcome` information pages, diary deep links, the PWA identity, and direct native startup.
 - Read relevant available design/motion skills before UI changes. Use shared motion tokens, reduced-motion/transparency fallbacks, meaningful icons and contrast checks. Native motion/material quality requires actual native verification.
+
+## UADS verification
+
+Read `uads.json` and `docs/UADS_REQUIREMENTS.md` before substantial work. Run `node scripts/validate-uads.mjs` to check declarations, and record functional evidence separately.

@@ -1,0 +1,107 @@
+[
+  {
+    "id": "UADS-PLAT-010",
+    "section": 10,
+    "title": "Expo mobile and web compatibility",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-UI-037",
+    "section": 37,
+    "title": "Onboarding and authentic screenshots",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-DEV-038",
+    "section": 38,
+    "title": "Production configuration and server switcher",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-DIST-039",
+    "section": 39,
+    "title": "Live landing downloads and installation",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-REL-040",
+    "section": 40,
+    "title": "Release and distribution synchronization",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-ARCH-041",
+    "section": 41,
+    "title": "Compliance manifest and applicability",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-QA-042",
+    "section": 42,
+    "title": "Objective quality gates",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-SEC-043",
+    "section": 43,
+    "title": "Security and trust boundaries",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-REL-044",
+    "section": 44,
+    "title": "Release state and recovery",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-OPS-045",
+    "section": 45,
+    "title": "Production observability and recovery",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-DOC-046",
+    "section": 46,
+    "title": "Requirements traceability",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-ARCH-047",
+    "section": 47,
+    "title": "Compliance bootstrap",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-QA-048",
+    "section": 48,
+    "title": "Automated compliance validation",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-CI-049",
+    "section": 49,
+    "title": "GitHub Actions integration",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  },
+  {
+    "id": "UADS-DOC-050",
+    "section": 50,
+    "title": "Continuous verification evidence",
+    "applicability": "required",
+    "verification": "Review implementation and execute applicable checks before claiming verification"
+  }
+]
