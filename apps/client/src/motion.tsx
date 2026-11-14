@@ -14,13 +14,13 @@ import {
   type PressableProps,
   type ViewProps,
 } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, { cubicBezier, FadeIn, FadeOut } from "react-native-reanimated";
 
 export const motionTokens = {
   press: 120,
   enter: 180,
   exit: 140,
-  easeOut: "cubic-bezier(0.23, 1, 0.32, 1)",
+  easeOut: cubicBezier(0.23, 1, 0.32, 1),
 } as const;
 type Preferences = {
   reducedMotion: boolean;
