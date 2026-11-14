@@ -106,6 +106,7 @@ export function Composer({
   const { meta } = useStore();
   const p = meta.preferences;
   const [content, setContent] = useState(p.draft);
+  const [writingPrompt, setWritingPrompt] = useState<string | null>(null);
   const [title, setTitle] = useState(p.draftTitle);
   const [tags, setTags] = useState(p.draftTags);
   const [type, setType] = useState(p.draftType);
@@ -196,20 +197,48 @@ export function Composer({
       )}
       <Row style={{ justifyContent: "space-between" }}>
         <Label size={28} bold>
-          A little space to think.
+          Write an entry.
         </Label>
         <Label size={12} muted>
           {status}
         </Label>
       </Row>
       <Card>
+        <Label bold>Writing prompts</Label>
+        <Row>
+          <Button
+            subtle
+            icon="sun"
+            onPress={() =>
+              setWritingPrompt("What stayed with you today, and why?")
+            }
+          >
+            Reflect on today
+          </Button>
+          <Button
+            subtle
+            icon="trending-up"
+            onPress={() =>
+              setWritingPrompt(
+                "Think back over the last few days. What keeps coming up, and what has changed in how you feel about it?",
+              )
+            }
+          >
+            Look back
+          </Button>
+        </Row>
+        {writingPrompt && <Label>{writingPrompt}</Label>}
+      </Card>
+      <Card>
         <Field
-          placeholder="A title, if you like"
+          label="Title (optional)"
+          placeholder="Give this entry a title"
           value={title}
           onChangeText={setTitle}
         />
         <Field
           testID="thought-content"
+          label="Journal entry"
           placeholder="What's on your mind?"
           value={content}
           onChangeText={setContent}

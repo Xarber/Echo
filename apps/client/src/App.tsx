@@ -532,7 +532,7 @@ export default function App() {
                 style={{ flex: 1 }}
                 contentContainerStyle={{
                   padding: wide ? 42 : 20,
-                  paddingBottom: 110,
+                  paddingBottom: !wide && path !== "/capture" ? 76 : 24,
                   alignItems: "center",
                 }}
                 keyboardShouldPersistTaps="handled"
@@ -625,11 +625,12 @@ export default function App() {
                     path === "/" && (
                       <Card style={{ backgroundColor: t.soft }}>
                         <Label size={22} bold>
-                          A home for your unfinished thoughts.
+                          Get started with Echo
                         </Label>
                         <Label>
-                          Start locally. No account, AI key or connection
-                          required.
+                          Write your first entry, revisit it in your journal,
+                          and connect related thoughts as you go. Your entries
+                          stay on this device unless you choose to sync.
                         </Label>
                         <Row>
                           <Button

@@ -20,3 +20,8 @@
 | Distribution | Build instructions and four-job parallel CI definitions, no public publishing | Compiled native artifacts, package validation, signing identity, release manifests and release automation |
 
 See reports/VALIDATION.md for actual executed tests. This table does not promote an implemented feature to device-tested or production-ready status.
+
+The entry editor offers two offline writing prompts, for reflecting on today
+and looking back across recent days. Selecting a prompt leaves the draft intact.
+These prompts are fixed questions. Native model-generated prompts and summaries
+of recent entries remain future work.
