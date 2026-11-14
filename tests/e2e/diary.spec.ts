@@ -18,7 +18,7 @@ test("offline capture, restart, revision, relationships, project and backup", as
     .first()
     .click();
   await page
-    .getByPlaceholder("A title, if you like")
+    .getByPlaceholder("Give this entry a title")
     .fill("A virtual doorbell");
   await page
     .getByTestId("thought-content")
@@ -52,7 +52,7 @@ test("offline capture, restart, revision, relationships, project and backup", as
   ).toBeVisible();
   await page.goto("/capture");
   await page
-    .getByPlaceholder("A title, if you like")
+    .getByPlaceholder("Give this entry a title")
     .fill("Messaging with friends");
   await page
     .getByTestId("thought-content")
@@ -309,7 +309,7 @@ test("manual AI scopes a fixture request and saves output without overwriting it
     });
   });
   await page.goto("/capture");
-  await page.getByPlaceholder("A title, if you like").fill("Source thought");
+  await page.getByPlaceholder("Give this entry a title").fill("Source thought");
   await page
     .getByTestId("thought-content")
     .fill("A real source, unchanged by the mocked AI");
