@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-import { developerOptionsEnabled, configuredApiUrl } from "./deployment";
+import {
+  developerOptionsEnabled,
+  configuredApiUrl,
+  productionBuild,
+  missingProductionEndpoint,
+} from "./deployment";
 import React, { useState } from "react";
 import { View, Pressable, Text, Platform } from "react-native";
 import {
@@ -161,7 +166,7 @@ export function Settings({
               you trust its administrator.
             </Label>
           )}
-          {!configuredApiUrl && (
+          {!productionBuild && !configuredApiUrl && (
             <Label size={12} muted>
               Configure AI_PROVIDER, AI_ENDPOINT, AI_MODEL and AI_API_KEY on
               your own backend. No paid key is needed for diary features.
@@ -171,11 +176,13 @@ export function Settings({
       </Section>
       <Section
         title={
-          configuredApiUrl ? "Synchronization" : "Self-hosted synchronization"
+          productionBuild || configuredApiUrl
+            ? "Synchronization"
+            : "Self-hosted synchronization"
         }
       >
         <Card>
-          {!configuredApiUrl && (
+          {!productionBuild && !configuredApiUrl && (
             <>
               <Field
                 label="Server URL (HTTPS except localhost)"
@@ -191,6 +198,12 @@ export function Settings({
                 Save server URL
               </Button>
             </>
+          )}
+          {missingProductionEndpoint && (
+            <Label muted>
+              Online services are unavailable. You can still write, read, and
+              back up entries on this device.
+            </Label>
           )}
           <Field
             label="Email"

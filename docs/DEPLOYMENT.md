@@ -61,3 +61,8 @@ AAB jobs stopped at release signing because the repository has no configured
 keystore. The iOS startup crash reported afterward was traced to a raw CSS
 timing string in shared press feedback. Use Reanimated's typed cubic Bézier
 factory so the same curve works with the native transition parser.
+
+A production build requires a valid HTTPS API base URL without embedded
+credentials, query parameters, or fragments. Missing or invalid configuration
+disables online requests and leaves local journal operations available. Stored
+development URLs cannot become the production fallback.

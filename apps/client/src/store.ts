@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-import { configuredApiUrl } from "./deployment";
+import {
+  configuredApiUrl,
+  productionBuild,
+  missingProductionEndpoint,
+} from "./deployment";
 import { useSyncExternalStore } from "react";
 import {
   recordSchema,
@@ -42,7 +46,9 @@ type Meta = {
 const defaults: Preferences = {
   theme: "system",
   aiMode: "disabled",
-  apiUrl: configuredApiUrl || "http://localhost:4280",
+  apiUrl: productionBuild
+    ? configuredApiUrl
+    : configuredApiUrl || "http://localhost:4280",
   welcome: false,
   lastVersion: "",
   autoCheck: true,
@@ -109,7 +115,9 @@ export async function initialize() {
       preferences: {
         ...defaults,
         ...((loaded.meta.preferences as object) || {}),
-        ...(configuredApiUrl ? { apiUrl: configuredApiUrl } : {}),
+        ...(productionBuild || configuredApiUrl
+          ? { apiUrl: configuredApiUrl }
+          : {}),
       },
     };
     persistenceReady = !loaded.readOnlyReason;
@@ -194,6 +202,10 @@ export async function importBackup(input: unknown, replaceConflicts = false) {
   return plan;
 }
 export async function api(path: string, body?: unknown, method?: string) {
+  if (missingProductionEndpoint)
+    throw new Error(
+      "Online services are unavailable. You can still use your journal offline.",
+    );
   const base = state.meta.preferences.apiUrl.replace(/\/$/, "");
   if (
     !/^https:\/\//.test(base) &&
