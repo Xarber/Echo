@@ -26,6 +26,7 @@ import {
 } from "./ui";
 import { MaterialSurface } from "./MaterialSurface";
 import { rememberEntry } from "./web-entry";
+import { LandingDownloads } from "./LandingDownloads";
 import { VERSION } from "@echo/core";
 
 /** Product routes deliberately do not import the store or access diary storage. */
@@ -193,10 +194,7 @@ function LandingContent() {
               Install Echo
             </Button>
           </Row>
-          <Label size={12} muted>
-            Available in your browser and as a PWA. iOS and Android source is
-            included; native installation packages are not available yet.
-          </Label>
+          <LandingDownloads />
         </View>
         <View style={{ flex: 1, width: "100%", maxWidth: 460 }}>
           <Card style={{ backgroundColor: theme.soft, padding: 30, gap: 24 }}>

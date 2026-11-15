@@ -34,3 +34,10 @@ existing local welcome preference. Existing users who dismissed the previous
 welcome card can replay the introduction from Settings without resetting it.
 Direct links to other screens bypass the guide. Platform screenshot assets and
 developer screenshot capture remain outstanding under UADS-UI-037.
+
+The landing page links to the public Echo repository and checks the latest
+stable GitHub release for uploaded universal APK and IPA assets. It validates
+download destinations against the Echo repository and shows availability
+separately from connection errors. The browser installation action appears
+when a native PWA prompt is available. Alternative installation banners
+require published, compatible distribution sources.

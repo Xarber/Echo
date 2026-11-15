@@ -29,3 +29,42 @@ test("root introduction remembers entry and the logo returns to it", async ({
     page.getByRole("button", { name: "Replay introduction" }),
   ).toBeVisible();
 });
+
+test("landing shows published downloads without exposing artifact filenames", async ({
+  page,
+}) => {
+  await page.route(
+    "https://api.github.com/repos/Xarber/Echo/releases/latest",
+    (route) =>
+      route.fulfill({
+        json: {
+          tag_name: "v1.2.3",
+          draft: false,
+          prerelease: false,
+          assets: [
+            {
+              name: "Echo-universal.apk",
+              state: "uploaded",
+              browser_download_url:
+                "https://github.com/Xarber/Echo/releases/download/v1.2.3/Echo-universal.apk",
+            },
+            {
+              name: "foreign.ipa",
+              state: "uploaded",
+              browser_download_url: "https://example.org/foreign.ipa",
+            },
+          ],
+        },
+      }),
+  );
+  await page.goto("/");
+  await expect(
+    page.getByRole("button", { name: "Android · APK · v1.2.3" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "GitHub", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: /Unsigned IPA/ })).toHaveCount(
+    0,
+  );
+});
