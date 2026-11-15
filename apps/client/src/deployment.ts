@@ -23,5 +23,6 @@ export const productionBuild =
 export const configuredApiUrl = productionBuild
   ? productionEndpoint(rawApiUrl)
   : rawApiUrl?.trim().replace(/\/$/, "") || "";
-export const developerOptionsEnabled = !productionBuild;
+export const developerOptionsEnabled =
+  !productionBuild || process.env.EXPO_PUBLIC_ECHO_DEVELOPER_TOOLS === "true";
 export const missingProductionEndpoint = productionBuild && !configuredApiUrl;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import {
   configuredApiUrl,
+  productionEndpoint,
   productionBuild,
   missingProductionEndpoint,
 } from "./deployment";
@@ -22,6 +23,7 @@ export type Preferences = {
   theme: "system" | "light" | "dark";
   aiMode: "disabled" | "manual" | "local-only";
   apiUrl: string;
+  developerApiUrl?: string;
   welcome: boolean;
   lastVersion: string;
   autoCheck: boolean;
@@ -201,12 +203,36 @@ export async function importBackup(input: unknown, replaceConflicts = false) {
   await putMany([...plan.added, ...(replaceConflicts ? plan.conflicts : [])]);
   return plan;
 }
+export const activeApiUrl = (prefs: Preferences) =>
+  productionEndpoint(prefs.developerApiUrl) || prefs.apiUrl.replace(/\/$/, "");
+
+export const switchDeveloperServer = (input: string | undefined) =>
+  exclusive(async () => {
+    const override = productionEndpoint(input);
+    if (input !== undefined && !override)
+      throw new Error("Enter a valid HTTPS server URL.");
+    if (state.meta.accountId || state.meta.syncOrigin || (await getSession()))
+      throw new Error(
+        "Sign out and reset sync binding before switching servers.",
+      );
+    await save(state.records, {
+      ...state.meta,
+      preferences: {
+        ...state.meta.preferences,
+        developerApiUrl: override || undefined,
+      },
+    });
+  });
+
 export async function api(path: string, body?: unknown, method?: string) {
-  if (missingProductionEndpoint)
+  if (
+    missingProductionEndpoint &&
+    !productionEndpoint(state.meta.preferences.developerApiUrl)
+  )
     throw new Error(
       "Online services are unavailable. You can still use your journal offline.",
     );
-  const base = state.meta.preferences.apiUrl.replace(/\/$/, "");
+  const base = activeApiUrl(state.meta.preferences);
   if (
     !/^https:\/\//.test(base) &&
     !/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/.test(base)
@@ -218,8 +244,14 @@ export async function api(path: string, body?: unknown, method?: string) {
     throw new Error(
       "This diary is bound to a different server. Export a backup and reset sync binding before connecting.",
     );
-  const token = await getSession();
+  const token = state.meta.syncOrigin === base ? await getSession() : null;
+  if (
+    base !== activeApiUrl(state.meta.preferences) ||
+    (token && state.meta.syncOrigin !== base)
+  )
+    throw new Error("The server changed. Please try again.");
   const response = await fetch(`${base}${path}`, {
+    redirect: "error",
     method: method || (body ? "POST" : "GET"),
     headers: {
       "Content-Type": "application/json",
@@ -237,16 +269,19 @@ export async function authenticate(
   password: string,
   register: boolean,
 ) {
+  const origin = activeApiUrl(state.meta.preferences);
   const data = await api(register ? "/auth/register" : "/auth/login", {
     email,
     password,
   });
   await exclusive(async () => {
+    if (origin !== activeApiUrl(state.meta.preferences))
+      throw new Error("The server changed while signing in. Please try again.");
     if (state.meta.accountId && state.meta.accountId !== data.userId) {
-      await fetch(
-        `${state.meta.preferences.apiUrl.replace(/\/$/, "")}/auth/logout`,
-        { method: "POST", headers: { Authorization: `Bearer ${data.token}` } },
-      );
+      await fetch(`${activeApiUrl(state.meta.preferences)}/auth/logout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${data.token}` },
+      });
       throw new Error(
         "This diary is bound to a different sync account. Export a backup and reset sync binding before switching accounts.",
       );
@@ -255,7 +290,7 @@ export async function authenticate(
     await save(state.records, {
       ...state.meta,
       accountId: data.userId,
-      syncOrigin: state.meta.preferences.apiUrl.replace(/\/$/, ""),
+      syncOrigin: activeApiUrl(state.meta.preferences),
     });
   });
   return data;

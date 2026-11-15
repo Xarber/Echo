@@ -66,3 +66,9 @@ A production build requires a valid HTTPS API base URL without embedded
 credentials, query parameters, or fragments. Missing or invalid configuration
 disables online requests and leaves local journal operations available. Stored
 development URLs cannot become the production fallback.
+
+Set `EXPO_PUBLIC_ECHO_DEVELOPER_TOOLS=true` to make the hidden Developer
+Options entry available in a production-configured build. Its Server Switcher
+stores a separate HTTPS override and probes health without sending cookies or
+tokens. Switching or restoring defaults requires an unbound diary and no
+active session. The override persists until explicitly removed.

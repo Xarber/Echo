@@ -5,6 +5,7 @@ import {
   productionBuild,
   missingProductionEndpoint,
 } from "./deployment";
+import { ServerSwitcher } from "./ServerSwitcher";
 import React, { useState } from "react";
 import { View, Pressable, Text, Platform } from "react-native";
 import {
@@ -589,6 +590,7 @@ export function Developer({ notify }: { notify: (s: string) => void }) {
       <Label bold size={30}>
         Developer Options
       </Label>
+      <ServerSwitcher />
       <Card>
         <Label bold>Diagnostics · no content or secrets</Label>
         <Label>
