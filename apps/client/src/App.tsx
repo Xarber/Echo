@@ -61,11 +61,15 @@ const nav = [
 let initialization: Promise<void> | null = null;
 let devExpires = 0;
 let previousMain = "";
-export default function App() {
+export default function App({ tabPath }: { tabPath?: string } = {}) {
   const store = useStore();
   const { width } = useWindowDimensions();
   const system = useColorScheme();
-  const path = usePathname();
+  const currentPath = usePathname();
+  const path = tabPath ?? currentPath;
+  const activeRoute = path === currentPath;
+  const nativeTabs =
+    Platform.OS !== "web" && nav.some((item) => item.path === path);
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [globalQuery, setGlobalQuery] = useState("");
@@ -97,13 +101,19 @@ export default function App() {
     }
   }, [message]);
   useEffect(() => {
-    if (store.loaded && !store.error && store.meta.preferences.welcome) {
+    if (
+      activeRoute &&
+      store.loaded &&
+      !store.error &&
+      store.meta.preferences.welcome
+    ) {
       const old = store.meta.preferences.lastVersion;
       if (old && old !== VERSION) setWhatsNew(true);
       if (old !== VERSION) void preferences({ lastVersion: VERSION });
     }
-  }, [store.loaded, store.meta.preferences.welcome]);
+  }, [activeRoute, store.loaded, store.meta.preferences.welcome]);
   useEffect(() => {
+    if (!activeRoute) return;
     const section = path.split("/")[1];
     const main = ["settings", "developer", "changelog"].includes(section)
       ? "settings"
@@ -119,7 +129,7 @@ export default function App() {
     activity.current = Date.now();
     if (path.startsWith("/entry/"))
       void hydrateEditingDraft(path.split("/")[2]);
-  }, [path]);
+  }, [activeRoute, path]);
   useEffect(() => {
     const timer = setInterval(() => {
       if (Date.now() >= devExpires) setDeveloper(false);
@@ -358,6 +368,7 @@ export default function App() {
     <ThemeProvider value={t}>
       <SafeAreaProvider>
         <SafeAreaView
+          edges={nativeTabs ? ["top", "left", "right"] : undefined}
           style={{ flex: 1, backgroundColor: t.bg }}
           onTouchStart={() => {
             activity.current = Date.now();
@@ -650,7 +661,7 @@ export default function App() {
                   {main()}
                 </View>
               </ScrollView>
-              {!wide && (
+              {!wide && !nativeTabs && (
                 <View
                   style={{
                     flexDirection: "row",
@@ -694,7 +705,13 @@ export default function App() {
                 </View>
               )}
               {!wide && path !== "/capture" && (
-                <View style={{ position: "absolute", right: 20, bottom: 84 }}>
+                <View
+                  style={{
+                    position: "absolute",
+                    right: 20,
+                    bottom: nativeTabs ? 16 : 84,
+                  }}
+                >
                   <Button
                     primary
                     icon="plus"

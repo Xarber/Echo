@@ -6,7 +6,7 @@ groups dependent work. Release operations follow implementation and validation.
 | ID | Requested outcome | State | Evidence or next action |
 |---|---|---|---|
 | E01 | Android build recovery | Blocked for signed distribution | Run 43584716740 failed at release signing. Existing release identity is unavailable. Add separate compile verification. |
-| E02 | Native tabs, safe areas and coherent layout | Queued | Give primary destinations concrete Expo Router screens; let the native tab container own the bottom inset. Retain Web navigation. |
+| E02 | Native tabs, safe areas and coherent layout | Implemented | Primary destinations use Expo Router NativeTabs on mobile. The tab container owns the bottom inset. Build and device verification remain pending. |
 | E03 | On-device daily prompts and multi-day reflection | Queued | Offline fixed prompts landed in 63fe6f3. Add an Apple Foundation Models adapter, availability checks and explicit journal context selection. |
 | E04 | Introduction and genuine screenshots | Implemented in part | 0d432db adds guide completion, skip and replay. Generate real captures per browser/device category and integrate them. |
 | E05 | Developer screenshot tools and isolated sample data | Queued | Render the actual screens with a separate read-only fixture source and add export. |
