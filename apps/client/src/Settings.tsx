@@ -480,6 +480,9 @@ export function Settings({
             </Label>
           </Row>
           <Label muted>Every thought deserves an echo.</Label>
+          <Button icon="book-open" onPress={() => navigate("/introduction")}>
+            Replay introduction
+          </Button>
           <Button icon="list" onPress={() => navigate("/changelog")}>
             What's new & changelog
           </Button>

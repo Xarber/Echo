@@ -9,10 +9,10 @@ test("offline capture, restart, revision, relationships, project and backup", as
   await page.goto("/");
   await expect(page.getByText("Every thought deserves an echo.")).toBeVisible();
   await page.getByRole("button", { name: "Open Echo", exact: true }).click();
-  await expect(page.getByText("A quiet place for bright ideas.")).toBeVisible();
   await page
-    .getByRole("button", { name: "Get started locally", exact: true })
+    .getByRole("button", { name: "Skip introduction", exact: true })
     .click();
+  await expect(page.getByText("A quiet place for bright ideas.")).toBeVisible();
   await page
     .getByRole("button", { name: "New thought", exact: true })
     .first()
@@ -464,7 +464,9 @@ test("a staged PWA update shows its own notes before activation and preserves a 
     ).toBeVisible();
     await Promise.all([
       page.waitForEvent("load"),
-      page.getByRole("button", { name: "Update & reload", exact: true }).click(),
+      page
+        .getByRole("button", { name: "Update & reload", exact: true })
+        .click(),
     ]);
     await page.goto(`${origin}/capture`);
     await expect(page.getByTestId("thought-content")).toHaveValue(

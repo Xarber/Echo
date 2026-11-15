@@ -1,3 +1,4 @@
+import { Introduction } from "./Introduction";
 import { developerOptionsEnabled } from "./deployment";
 import { MaterialSurface } from "./MaterialSurface";
 import { MotionPressable as Pressable, AnimatedNotice } from "./motion";
@@ -286,6 +287,32 @@ export default function App() {
       return <AIWorkspace ask navigate={navigate} notify={notify} />;
     if (path === "/reflect")
       return <Reflect navigate={navigate} notify={notify} />;
+    if (
+      path === "/introduction" ||
+      (path === "/" &&
+        store.loaded &&
+        !store.error &&
+        !store.meta.preferences.welcome)
+    )
+      return (
+        <Introduction
+          close={async () => {
+            try {
+              if (path === "/introduction") {
+                navigate("/settings");
+              } else {
+                await preferences({ welcome: true, lastVersion: VERSION });
+              }
+            } catch (error) {
+              notify(
+                error instanceof Error
+                  ? error.message
+                  : "Could not save your preference.",
+              );
+            }
+          }}
+        />
+      );
     if (path === "/settings")
       return (
         <Settings
@@ -620,44 +647,6 @@ export default function App() {
                       </Button>
                     </Card>
                   )}
-                  {!store.meta.preferences.welcome &&
-                    !store.error &&
-                    path === "/" && (
-                      <Card style={{ backgroundColor: t.soft }}>
-                        <Label size={22} bold>
-                          Get started with Echo
-                        </Label>
-                        <Label>
-                          Write your first entry, revisit it in your journal,
-                          and connect related thoughts as you go. Your entries
-                          stay on this device unless you choose to sync.
-                        </Label>
-                        <Row>
-                          <Button
-                            primary
-                            onPress={() =>
-                              void preferences({
-                                welcome: true,
-                                lastVersion: VERSION,
-                              })
-                            }
-                          >
-                            Get started locally
-                          </Button>
-                          <Button
-                            onPress={() => {
-                              void preferences({
-                                welcome: true,
-                                lastVersion: VERSION,
-                              });
-                              navigate("/settings");
-                            }}
-                          >
-                            Configure sync / Sign in
-                          </Button>
-                        </Row>
-                      </Card>
-                    )}
                   {main()}
                 </View>
               </ScrollView>

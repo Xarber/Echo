@@ -25,3 +25,12 @@ The entry editor offers two offline writing prompts, for reflecting on today
 and looking back across recent days. Selecting a prompt leaves the draft intact.
 These prompts are fixed questions. Native model-generated prompts and summaries
 of recent entries remain future work.
+
+## First-launch introduction
+
+After entry from the Web landing page, or on native Home, the guide introduces
+writing, the journal, and local storage. Completing or skipping it saves the
+existing local welcome preference. Existing users who dismissed the previous
+welcome card can replay the introduction from Settings without resetting it.
+Direct links to other screens bypass the guide. Platform screenshot assets and
+developer screenshot capture remain outstanding under UADS-UI-037.
