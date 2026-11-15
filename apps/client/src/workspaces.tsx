@@ -1,3 +1,4 @@
+import { OnDeviceReflection } from "./OnDeviceReflection";
 import { MotionPressable as Pressable } from "./motion";
 // SPDX-License-Identifier: AGPL-3.0-only
 import React, { useState } from "react";
@@ -580,6 +581,7 @@ export function Reflect({
       <Label size={30} bold>
         Make room to look back.
       </Label>
+      <OnDeviceReflection entries={selected} />
       <Label muted>
         No streaks. No pressure. Just a moment with your own thoughts.
       </Label>

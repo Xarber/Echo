@@ -41,3 +41,8 @@ download destinations against the Echo repository and shows availability
 separately from connection errors. The browser installation action appears
 when a native PWA prompt is available. Alternative installation banners
 require published, compatible distribution sources.
+
+Reflect includes on-device writing help when Apple Foundation Models is
+available. The daily prompt uses no entries. Recent reflection uses up to
+five entries from the selected period, omitting archived or AI-excluded entries.
+No network fallback or automatic journal write is used.

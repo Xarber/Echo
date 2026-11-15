@@ -7,7 +7,7 @@ groups dependent work. Release operations follow implementation and validation.
 |---|---|---|---|
 | E01 | Android build recovery | Blocked for signed distribution | Run 43584716740 failed at release signing. Existing release identity is unavailable. Add separate compile verification. |
 | E02 | Native tabs, safe areas and coherent layout | Implemented | Primary destinations use Expo Router NativeTabs on mobile. The tab container owns the bottom inset. Build and device verification remain pending. |
-| E03 | On-device daily prompts and multi-day reflection | Queued | Offline fixed prompts landed in 63fe6f3. Add an Apple Foundation Models adapter, availability checks and explicit journal context selection. |
+| E03 | On-device daily prompts and multi-day reflection | Implemented | Reflect uses the local Apple model for daily prompts and up to five eligible excerpts. TypeScript and Apple autolinking passed. Next run the iOS build and exercise both actions on a supported device. |
 | E04 | Introduction and genuine screenshots | Implemented in part | 0d432db adds guide completion, skip and replay. Generate real captures per browser/device category and integrate them. |
 | E05 | Developer screenshot tools and isolated sample data | Queued | Render the actual screens with a separate read-only fixture source and add export. |
 | E06 | Developer server switcher and production behavior | Implemented | 36f295d rejects missing or invalid production endpoints. Switcher probes health without credentials and requires an unbound diary. Browser and native switching verification remain pending. |
